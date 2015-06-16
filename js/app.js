@@ -4,12 +4,18 @@
 	function PedidosFactory($http,$q){
 		var Pedidos = {};	
 		
-		Pedidos.getData = function(){
-			return $http.get('/getData')
+		Pedidos.refreshData = function(){
+			return $http.get('/refreshData')
 		.then(function (searchRes){
-			
 			return searchRes.data;
+		})
+		}
 
+		Pedidos.getData = function (){
+			return $http.get('/getData')
+		.then(function (res){
+			
+			return res.data;
 		})
 		}
 		
@@ -27,10 +33,14 @@
 			self.pedidos = [];
 			self.selectedAll = false;
 			this.refreshData = function(){
-				Pedidos.getData().then(function (data){
-					self.pedidos = data.retorno.notasfiscais;
-				})
+				Pedidos.refreshData();
 			};
+			this.getData = function(){
+				Pedidos.getData().then(function (data){
+					
+					self.pedidos = data;
+				})
+			}
 			this.selectAll = function(){
 				if (self.selectedAll) {
 		            self.selectedAll = true;
@@ -49,7 +59,7 @@
 						$http({
 						    url: sistema.instakioski.com.br/magentoapi2/envia.php, 
 						    method: "GET",
-						    params: {pedido : item.notafiscal.numeroPedidoLoja,rastreio: item.notafiscal.codigosRastreamento.codigosRastreamento}
+						    params: {pedido : item.numeroPedidoLoja,rastreio: item.codigosRastreamento.codigosRastreamento}
 						 });
 			           	//sistema.instakioski.com.br/magentoapi2/envia.php?id=pedido&rastreio=
 			        };

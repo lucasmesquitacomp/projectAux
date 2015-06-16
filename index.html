@@ -8,8 +8,8 @@
 <body ng-app="app">
 
 <div ng-controller="PedidoController as pedidoCtrl" class = "container">
-	
-	<button ng-click="pedidoCtrl.refreshData()">Pegar envios</button>
+	<button ng-click="pedidoCtrl.refreshData()">Atualiza envios</button>
+	<button ng-click="pedidoCtrl.getData()">Pegar envios</button>
 	<div class = "row">
 		<table class="table table-striped">
 				<thead>
@@ -24,17 +24,17 @@
 				</thead>
 				<tbody>
 				<tr ng-repeat="pedido in pedidoCtrl.pedidos">
-					<td>{{pedido.notafiscal.contato}}</td>
-					<td>{{pedido.notafiscal.numeroPedidoLoja}}</td>
-					<td>{{pedido.notafiscal.dataEmissao}}</td>
-					<td>{{pedido.notafiscal.codigosRastreamento.codigoRastreamento}}</td>
-					<td>{{pedido.notafiscal.situacao}}</td>
+					<td>{{pedido.contato}}</td>
+					<td>{{pedido.numeroPedidoLoja}}</td>
+					<td>{{pedido.dataEmissao}}</td>
+					<td>{{pedido.codigosRastreamento.codigoRastreamento}}</td>
+					<td>{{pedido.situacao}}</td>
 					<td><input type="checkbox" ng-model="pedido.Selected" /></td>
 				</tr>
 				</tbody>
 		</table>
 	</div>
-		<button ng-click="pedidoCtrl.sendSelected()">Gerar envios</button>
+		<button ng-click="pedidoCtrl.sendSelected()">Salvar Envios</button>
 
 </div>	
 	

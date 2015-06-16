@@ -9,33 +9,44 @@ app.set('views', './');
 
 app.use(express.static('./'));
 
-function atualizaBanco (resp) {
-		var arrayRet = '';
-
- 	    resp.on('data', function (chunk) {
- 	    	arrayRet += chunk;
-  		});
-
-  		resp.on('end', function () {
-  			arrayRet = JSON.parse(arrayRet);
-  			res.json(arrayRet);
-  		})
-		
-		resp.on('error', function(e) {
-  	  		console.log("Got error: " + e.message);
-		})		
-	}
-
-
 app.get('/', function(req, res) {
-;
 	res.render('index.html');
 
 });
-app.get('/getData', function(req, res){
-	http.get("http://sistema.instakioski.com.br/bling.php", atualizaBanco); 
-	console.log('haha')	
+app.get('/refreshData', function(req, res){
+	http.get("http://sistema.instakioski.com.br/bling.php", function (resp) {
+		var data = '';
+		var pedidos = db.collection('pedidos');
+ 	    resp.on('data', function (chunk) {
+ 	    	data += chunk;
+  		});
+
+  		resp.on('end', function () {
+  			data = JSON.parse(data);
+  			data = data.retorno.notasfiscais;
+  			data.forEach(function (item) {
+  				pedidos.update({numeroPedidoLoja : item.notafiscal.numeroPedidoLoja}, item.notafiscal,{upsert:true})	
+  			})
+  			res.end();
+  		})
+		
+		})
+		.on('error', function(e) {
+  	  		console.log("Got error: " + e.message);
+		});
 });
+
+app.get('/getData', function(req, res){
+	
+	var pedidos = db.collection('pedidos');
+	pedidos.find()
+	.then(function (data){
+		res.json(data);	
+	})
+	
+})
+
+
 
 MongoNative.connect('mongodb://localhost/envia').then(function (db){
 	global.db = db;
