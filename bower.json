@@ -1,0 +1,16 @@
+{
+  "name": "project-aux",
+  "version": "0.0.0",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.0",
+    "bootstrap": "~3.3.4"
+  }
+}
