@@ -18,7 +18,10 @@
 					<th>N pedido</th>
 					<th>Data envio</th>
 					<th>Rastreio</th>
-					<th>Situação pgto</th>
+					<th>
+					    <select ng-model="pedidoCtrl.filterSelected" ng-options="filter.filter for filter in pedidoCtrl.filters" ng-change="pedidoCtrl.getFilterData(pedidoCtrl.filterSelected)">
+					    </select>
+					</th>
 					<th><input type="checkbox" ng-model="pedidoCtrl.selectedAll" ng-click="pedidoCtrl.selectAll()" /></th>
 				</tr>
 				</thead>

@@ -37,8 +37,21 @@ app.get('/refreshData', function(req, res){
 });
 
 app.get('/getData', function(req, res){
-	
+
 	var pedidos = db.collection('pedidos');
+	pedidos.find()
+	.then(function (data){
+		res.json(data);	
+	})
+	
+})
+
+app.get('/getData/:filter', function(req, res){
+	var pedidos = db.collection('pedidos');
+	console.log('aqui to eu')
+	
+	var filt = req.params.filter;
+	console.log(filt);
 	pedidos.find()
 	.then(function (data){
 		res.json(data);	
