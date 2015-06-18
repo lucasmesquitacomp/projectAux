@@ -9,7 +9,6 @@
 
 <div ng-controller="PedidoController as pedidoCtrl" class = "container">
 	<button ng-click="pedidoCtrl.refreshData()">Atualiza envios</button>
-	<button ng-click="pedidoCtrl.getData()">Pegar envios</button>
 	<div class = "row">
 		<table class="table table-striped">
 				<thead>
@@ -26,7 +25,7 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr ng-repeat="pedido in pedidoCtrl.pedidos">
+				<tr ng-repeat="pedido in pedidoCtrl.pedidosFilter">
 					<td>{{pedido.contato}}</td>
 					<td>{{pedido.numeroPedidoLoja}}</td>
 					<td>{{pedido.dataEmissao}}</td>
@@ -37,10 +36,9 @@
 				</tbody>
 		</table>
 	</div>
-		<button ng-click="pedidoCtrl.sendSelected()">Salvar Envios</button>
 
-</div>	
-	
+		<button ng-click="pedidoCtrl.sendSelected()">Salvar Envios</button>
+		
 	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="js/app.js"></script>
 </body>
