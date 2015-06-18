@@ -2,8 +2,23 @@
 	var app = angular.module('app',[]);
 
 	function PedidosFactory($http,$q){
-		var Pedidos = {};	
-		
+		var Pedidos = {
+			endpoint:'sistema.instakioski.com.br/magentoapi2/envia.php'
+		};	
+			
+		Pedidos.sendData = function (nPedido, rastr){
+			
+			return $http({
+				url: Pedidos.endpoint,
+				method:'GET',
+				params:{
+	  			pedido : nPedido,
+	  			rastreio: rastr
+	  		}
+			}).then(function (status){
+	  		return status.data;
+	  	})
+		}
 		Pedidos.refreshData = function(){
 			return $http.get('/refreshData')
 		.then(function (searchRes){
@@ -76,12 +91,8 @@
 				angular.forEach(self.pedidosFilter, function (item) {
 		            
 		            if(item.Selected){ 
-		        			   	
-									$http({
-						    		url: 'sistema.instakioski.com.br/magentoapi2/envia.php', 
-						    		method: "GET",
-						    		params: {pedido : item.numeroPedidoLoja, rastreio: item.codigosRastreamento.codigosRastreamento}
-						 			}).then(function(){
+		        			 Pedidos.sendData(item.numeroPedidoLoja,item.codigosRastreamento.codigoRastreamento)  	
+									.then(function(){
 						 				 	console.log('tess');
 						 				 	item.situacao = "Enviado"
 									 });

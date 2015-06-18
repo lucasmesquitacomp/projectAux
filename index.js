@@ -98,7 +98,7 @@ app.post('/updateData', function (req,res){
 
 MongoNative.connect('mongodb://localhost/envia').then(function (db){
 	global.db = db;
-	app.listen(5000);
+	app.listen(9999);
 })
 
 
