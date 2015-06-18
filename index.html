@@ -9,6 +9,7 @@
 
 <div ng-controller="PedidoController as pedidoCtrl" class = "container">
 	<button ng-click="pedidoCtrl.refreshData()">Atualiza envios</button>
+	<button ng-click="pedidoCtrl.sendSelected()">Salvar Envios</button>
 	<div class = "row">
 		<table class="table table-striped">
 				<thead>
@@ -37,7 +38,7 @@
 		</table>
 	</div>
 
-		<button ng-click="pedidoCtrl.sendSelected()">Salvar Envios</button>
+		
 		
 	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="js/app.js"></script>

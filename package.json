@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.13.1",
-    "mongo-native": "^1.0.22"
+    "mongo-native": "^1.0.22",
+    "q": "^1.4.1"
   }
 }

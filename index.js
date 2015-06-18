@@ -3,6 +3,7 @@ var express = require('express');
 var http = require('http');
 var MongoNative = require('mongo-native');
 var bodyParser = require('body-parser');
+var Q = require('q');
 var app = express();
 
 
@@ -29,21 +30,17 @@ app.get('/refreshData', function(req, res){
   			data = JSON.parse(data);
   			data = data.retorno.notasfiscais;
   			data.forEach(function (item) {
-  				
-
-
-  				pedidos.findAndModify({numeroPedidoLoja : item.notafiscal.numeroPedidoLoja},
-  				,
-  				{ $setOnInsert: { banco: "mongo" }},
-  				{new: true, upsert: true} // insert the document if it does not exist
-				)
-
-
-  			//	pedidos.update({numeroPedidoLoja : item.notafiscal.numeroPedidoLoja}, item.notafiscal,{upsert:true})	
+	  			pedidos.findAndModify({
+	  				numeroPedidoLoja: item.notafiscal.numeroPedidoLoja
+	  			},null
+	  			,{$setOnInsert:item.notafiscal}		
+	  			, {
+	  				new: true,
+	  				upsert: true
+	  			}) // insert the document if it does not exist
   			})
   			res.end();
   		})
-		
 		})
 		.on('error', function(e) {
   	  		console.log("Got error: " + e.message);
@@ -66,12 +63,20 @@ app.post('/getFilterData',function (req,res){
 		if(filt==="Todos"){
 		pedidos.find()
 			.then(function (data){
+				data.sort(function(obj1, obj2) {
+					// Ascending: first age less than the previous
+					return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
+				});
 				res.json(data);	
 			})
 		}
 		else{
 			pedidos.find({situacao : filt})
 			.then(function (data){
+				data.sort(function(obj1, obj2) {
+					// Ascending: first age less than the previous
+					return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
+				});
 				res.json(data);
 			})
 		}
@@ -80,17 +85,16 @@ app.post('/getFilterData',function (req,res){
 app.post('/updateData', function (req,res){
 	var pedidos = db.collection('pedidos')
 	var data = req.body;
-	console.log(data);
-	data.forEach(function (item) {
-  		
-		console.log(item);
-  		pedidos.update({numeroPedidoLoja : item.notafiscal.numeroPedidoLoja}, item.notafiscal,{upsert:true})	
-  	})
-  	res.end();
+	pedidos.update({numeroPedidoLoja : data.numeroPedidoLoja}, data)
+	.then(function(result){
+		res.json(result);
+	}, function (err) {
+		console.log(err)
+		res.status(400).end()
+	});
+	
+  	
 })
-
-
-
 
 MongoNative.connect('mongodb://localhost/envia').then(function (db){
 	global.db = db;
