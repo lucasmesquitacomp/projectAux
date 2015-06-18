@@ -22,7 +22,8 @@
 					    <select ng-model="pedidoCtrl.filterSelected" ng-options="filter.filter for filter in pedidoCtrl.filters" ng-change="pedidoCtrl.getFilterData(pedidoCtrl.filterSelected)">
 					    </select>
 					</th>
-					<th><input type="checkbox" ng-model="pedidoCtrl.selectedAll" ng-click="pedidoCtrl.selectAll()" /></th>
+		
+					<th ng-show="pedidoCtrl.filterSelected.filter === 'Pendente'"><input type="checkbox" ng-model="pedidoCtrl.selectedAll" ng-click="pedidoCtrl.selectAll()" /></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -32,7 +33,7 @@
 					<td>{{pedido.dataEmissao}}</td>
 					<td>{{pedido.codigosRastreamento.codigoRastreamento}}</td>
 					<td>{{pedido.situacao}}</td>
-					<td><input type="checkbox" ng-model="pedido.Selected" /></td>
+					<td ng-show="pedidoCtrl.filterSelected.filter === 'Pendente'">><input type="checkbox" ng-model="pedido.Selected" /></td>
 				</tr>
 				</tbody>
 		</table>
