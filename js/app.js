@@ -3,7 +3,7 @@
 
 	function PedidosFactory($http,$q){
 		var Pedidos = {
-			endpoint:'sistema.instakioski.com.br/magentoapi2/envia.php'
+			endpoint:'http://sistema.instakioski.com.br/magentoapi2/envia.php'
 		};	
 			
 		Pedidos.sendData = function (nPedido, rastr){
@@ -12,7 +12,7 @@
 				url: Pedidos.endpoint,
 				method:'GET',
 				params:{
-	  			pedido : nPedido,
+	  			id: nPedido,
 	  			rastreio: rastr
 	  		}
 			}).then(function (status){
@@ -93,7 +93,7 @@
 		            if(item.Selected){ 
 		        			 Pedidos.sendData(item.numeroPedidoLoja,item.codigosRastreamento.codigoRastreamento)  	
 									.then(function(){
-						 				 	console.log('tess');
+						 				 	
 						 				 	item.situacao = "Enviado"
 									 });
 			         		

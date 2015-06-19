@@ -5,15 +5,17 @@
 	 
   <title>Envios Altum</title>
 </head>
-<body ng-app="app">
+<body ng-app="app" class ="container">
 
-<div ng-controller="PedidoController as pedidoCtrl" class = "container">
-	<button ng-click="pedidoCtrl.refreshData()">Atualiza envios</button>
-	<button ng-click="pedidoCtrl.sendSelected()">Salvar Envios</button>
-	<div class = "row">
+<div ng-controller="PedidoController as pedidoCtrl" class="row">
+		<div class="row top-buffer">
+			<button class="pull-left btn btn-primary" ng-click="pedidoCtrl.refreshData()">Atualiza envios</button>
+			<button class="pull-right btn btn-primary" ng-click="pedidoCtrl.sendSelected()">Salvar Envios</button>
+		</div>
+	<div class = "row top-buffer">
 		<table class="table table-striped">
 				<thead>
-				<tr>
+				<tr class="table-bordered">
 					<th>Nome</th>
 					<th>N pedido</th>
 					<th>Data envio</th>
@@ -26,14 +28,14 @@
 					<th ng-show="pedidoCtrl.filterSelected.filter === 'Pendente'"><input type="checkbox" ng-model="pedidoCtrl.selectedAll" ng-click="pedidoCtrl.selectAll()" /></th>
 				</tr>
 				</thead>
-				<tbody>
+				<tbody class="table-bordered">
 				<tr ng-repeat="pedido in pedidoCtrl.pedidosFilter">
 					<td>{{pedido.contato}}</td>
 					<td>{{pedido.numeroPedidoLoja}}</td>
 					<td>{{pedido.dataEmissao}}</td>
 					<td>{{pedido.codigosRastreamento.codigoRastreamento}}</td>
 					<td>{{pedido.situacao}}</td>
-					<td ng-show="pedidoCtrl.filterSelected.filter === 'Pendente'">><input type="checkbox" ng-model="pedido.Selected" /></td>
+					<td ng-show="pedidoCtrl.filterSelected.filter === 'Pendente'"><input type="checkbox" ng-model="pedido.Selected" /></td>
 				</tr>
 				</tbody>
 		</table>
