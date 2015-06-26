@@ -168,7 +168,10 @@ app.get('/logout', function(req, res){
 app.listen(5000, function() {
   console.log('Express server listening on port 5000');
 });
+MongoNative.connect('mongodb://localhost/envioEnvio').then(function (db){
+  global.db = db;
 
+})
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
