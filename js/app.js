@@ -6,16 +6,9 @@
 			endpoint:'http://sistema.instakioski.com.br/magentoapi2/envia.php'
 		};	
 			
-		Pedidos.sendData = function (nPedido, rastr){
+		Pedidos.sendData = function (pedido){
 			
-			return $http({
-				url: Pedidos.endpoint,
-				method:'GET',
-				params:{
-	  			id: nPedido,
-	  			rastreio: rastr
-	  		}
-			}).then(function (status){
+			return $http.post('/sendData', pedido).then(function (status){
 	  		return status.data;
 	  	})
 		}
@@ -25,13 +18,7 @@
 			return searchRes.data;
 		})
 		}
-		Pedidos.updateData = function(data){
-			
-			return $http.post('/updateData',data)
-		.then(function (res){
-			
-		})
-		}
+
 		Pedidos.getFiltData = function (filter){
 			
 			return $http.post('/getFilterData',filter)
@@ -52,7 +39,6 @@
 
 		app.controller('PedidoController',function (Pedidos,$http){
 			var self = this;
-			self.pedidos = [];
 			self.pedidosFilter = [];
 			self.selectedAll = false;
 			
@@ -87,26 +73,9 @@
 
     		};
 			this.sendSelected = function(){
-			
-				angular.forEach(self.pedidosFilter, function (item) {
-		            
-		            if(item.Selected){ 
-		        			 Pedidos.sendData(item.numeroPedidoLoja,item.codigosRastreamento.codigoRastreamento)  	
-									.then(function(){
-						 				 	
-						 				 	item.situacao = "Enviado"
-									 });
-			         		
-			         		item.situacao = "Enviado";
-			         		delete item.Selected;
-									delete item._id;
-			         	   	//sistema.instakioski.com.br/magentoapi2/envia.php?id=pedido&rastreio=
-			      	 		Pedidos.updateData(item);
-			      	 		console.log(item);
-			      	 } 
-		    })
-		        
-		        
+				Pedidos.sendData(self.pedidosFilter).then(function (data){
+					self.pedidosFilter = data;
+				});		        
 			};
 			
 		})

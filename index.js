@@ -102,6 +102,13 @@ var Q = require('q');
 
 
 //Auth Functions
+function updateItem(item){
+	var pedidos = db.collection('pedidos');
+	delete item._id;
+	console.log(item);
+	pedidos.update({numeroPedidoLoja : item.numeroPedidoLoja}, item)
+
+}
 function ensureAuthenticated(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
@@ -189,6 +196,40 @@ app.get('/refreshData', function(req, res){
 		});
 });
 
+app.post('/sendData', function(req, res){
+
+	var data = req.body;
+		data.forEach(function (item){
+			var dados='';
+			if(item.Selected){
+				qstring = 'http://sistema.instakioski.com.br/magentoapi2/envia.php?id='+item.numeroPedidoLoja+"&rastreio="+item.codigosRastreamento.codigoRastreamento;
+  
+  			var req = http.get(qstring, function(response){
+    			console.log(response.statusCode);
+    			
+    			response.on('data',function (chunk){
+    				dados+=chunk;
+    			});
+
+    			response.on('end', function(){
+    				console.log('teste')
+    				item.situacao = "Enviado";
+    				delete item.Selected;
+						updateItem(item);
+    			});
+    			
+    		});
+    		req.on('error', function(e){
+    				delete item.Selected;
+ 						console.log('Got error: ' + e.message);
+    			});
+    		
+			}
+			
+		})
+	res.json(data);
+})
+
 app.get('/getData', function(req, res){
 
 	var pedidos = db.collection('pedidos');
@@ -206,7 +247,7 @@ app.post('/getFilterData',function (req,res){
 		pedidos.find()
 			.then(function (data){
 				data.sort(function(obj1, obj2) {
-					// Ascending: first age less than the previous
+					
 					return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
 				});
 				res.json(data);	
@@ -216,33 +257,16 @@ app.post('/getFilterData',function (req,res){
 			pedidos.find({situacao : filt})
 			.then(function (data){
 				data.sort(function(obj1, obj2) {
-					// Ascending: first age less than the previous
+					
 					return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
 				});
 				res.json(data);
 			})
 		}
-
 });
-// passar por POST os dados
-// {
-// 'username' : 'HDQWHD'
-// 'password' : 'HDQWHD'
-//}
+
 app.post('/auth', passport.authenticate('local'));
-app.post('/updateData', function (req,res){
-	var pedidos = db.collection('pedidos')
-	var data = req.body;
-	pedidos.update({numeroPedidoLoja : data.numeroPedidoLoja}, data)
-	.then(function(result){
-		res.json(result);
-	}, function (err) {
-		console.log(err)
-		res.status(400).end()
-	});
-	
-  	
-})
+
 
 MongoNative.connect('mongodb://localhost/sistemaEnvio').then(function (db){
 	global.db = db;
