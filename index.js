@@ -61,7 +61,7 @@ var Q = require('q');
 	//Auth add user(temporrario = alimentar);
 
 	var User = mongoose.model('User', userSchema);
-	var user = new User({username: 'Altum', email: 'altum@gmail.com',password:'altum'});
+	var user = new User({username: 'altum', email: 'altum@altum.com',password:'altum#123'});
 	user.save(function(err){
 		if(err){
 			console.log(err);
