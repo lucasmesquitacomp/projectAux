@@ -268,7 +268,7 @@ app.post('/getFilterData',function (req,res){
 app.post('/auth', passport.authenticate('local'));
 
 
-MongoNative.connect('mongodb://localhost/sistemaEnvio').then(function (db){
+MongoNative.connect('mongodb://localhost/systemEnvios').then(function (db){
 	global.db = db;
 	app.listen(9000);
 })
