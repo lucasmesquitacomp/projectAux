@@ -82,11 +82,12 @@
     		})	
     	}	
 			this.sendSelected = function(){
-				Pedidos.sendData(self.pedidosFilter).then(function (data){
-					self.pedidosFilter = data;
-				});		        
-			};
-			
+				if(confirm("Tens certeza que quer continuar?")){
+						Pedidos.sendData(self.pedidosFilter).then(function (data){
+						self.pedidosFilter = data;
+						});		        
+					};
+				}
 		})
 		
 })();
