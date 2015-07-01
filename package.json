@@ -15,6 +15,7 @@
     "ejs": "^2.3.1",
     "ejs-locals": "^1.0.2",
     "express-session": "^1.11.3",
+    "lodash": "^3.10.0",
     "method-override": "^2.3.3",
     "mongo-native": "^1.0.22",
     "mongodb": "^2.0.35",
@@ -24,7 +25,7 @@
     "passport-local": "^1.0.0",
     "q": "^1.4.1"
   },
-   "env": {
-     "PYTHON": "/opt/local/bin/python2.7"
+  "env": {
+    "PYTHON": "/opt/local/bin/python2.7"
   }
 }

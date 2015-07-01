@@ -12,6 +12,7 @@
   "dependencies": {
     "angular": "~1.4.0",
     "bootstrap": "~3.3.4",
-    "angular-material": "~0.10.0"
+    "angular-material": "~0.10.0",
+    "lodash": "~3.9.3"
   }
 }

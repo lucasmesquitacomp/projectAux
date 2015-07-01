@@ -100,6 +100,18 @@ var Q = require('q');
 		});
 	}));
 
+function containsObject(obj, list) {
+    var i;
+    console.log(list.lenght);
+    for (i = 0; i < list.length; i++) {
+       console.log(list[i].filter +" tst "+ obj.filter);
+        if (list[i].filter === obj.filter) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 //Auth Functions
 function updateItem(item){
@@ -170,12 +182,15 @@ app.get('/logout', function(req , res){
 app.get('/refreshData', function(req, res){
 	http.get("http://sistema.instakioski.com.br/bling.php", function (resp) {
 		var data = '';
+		var filts = [{filter : "Todos"}];
+		var obj ={};
 		var pedidos = db.collection('pedidos');
  	    resp.on('data', function (chunk) {
  	    	data += chunk;
   		});
 
   		resp.on('end', function () {
+  			
   			data = JSON.parse(data);
   			data = data.retorno.notasfiscais;
   			data.forEach(function (item) {
@@ -186,9 +201,17 @@ app.get('/refreshData', function(req, res){
 	  			, {
 	  				new: true,
 	  				upsert: true
-	  			}) // insert the document if it does not exist
+	  			})
+	  				obj = {filter : item.notafiscal.situacao}; 
+	  				
+	  				if(!containsObject(obj, filts)){
+	  					filts.push(obj);
+	  				}
+	  				 				
+  					
   			})
-  			res.end();
+  			console.log(filts);
+  			res.json(filts);
   		})
 		})
 		.on('error', function(e) {
@@ -212,8 +235,6 @@ app.post('/sendData', function(req, res){
     			});
 
     			response.on('end', function(){
-    				console.log('teste')
-    				item.situacao = "Enviado";
     				delete item.Selected;
 						updateItem(item);
     			});

@@ -15,6 +15,7 @@
 		Pedidos.refreshData = function(){
 			return $http.get('/refreshData')
 		.then(function (searchRes){
+
 			return searchRes.data;
 		})
 		}
@@ -31,8 +32,6 @@
 	return Pedidos;
 	}
 	
-
-	
 		
 		app.factory('Pedidos', PedidosFactory);
 			
@@ -42,24 +41,19 @@
 			self.pedidosFilter = [];
 			self.selectedAll = false;
 			
-			this.filters = [
-	     	   	{filter: "Pendente" },
-	      		{filter: "Emitida DANFE" },
-	      		{filter: "Cancelada" },
-	      		{filter: "Enviado" },
-	      		{filter: "Todos" }
-    		]
+			self.filters = [];
 
 			this.refreshData = function(){
-				Pedidos.refreshData();
+				Pedidos.refreshData().then(function(filts){
+					self.filters = filts;
+				});
+
 			};
 			this.getFilterData = function(filter){
 				
 				Pedidos.getFiltData(filter).then(function (data){
-				
 					self.pedidosFilter = data;
-				})
-
+			});
 			}
 			this.selectAll = function(){
 				if (self.selectedAll) {
