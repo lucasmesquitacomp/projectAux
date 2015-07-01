@@ -19,6 +19,12 @@
 			return searchRes.data;
 		})
 		}
+		Pedidos.searchData = function (ind){
+			return $http.get('/searchData?index='+ind)
+		.then(function (res){
+			return res.data;
+		})
+		}
 
 		Pedidos.getFiltData = function (filter){
 			
@@ -40,7 +46,10 @@
 			var self = this;
 			self.pedidosFilter = [];
 			self.selectedAll = false;
-			
+			self.statusFilters = [
+				{filter : "Enviado"},
+				{filter : "Nao Enviado"}
+			]
 			self.filters = [];
 
 			this.refreshData = function(){
@@ -66,6 +75,12 @@
 		        });
 
     		};
+
+    	this.searchData = function (ind){
+    		Pedidos.searchData(ind).then(function (data){
+    			self.pedidosFilter = data;
+    		})	
+    	}	
 			this.sendSelected = function(){
 				Pedidos.sendData(self.pedidosFilter).then(function (data){
 					self.pedidosFilter = data;

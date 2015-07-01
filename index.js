@@ -102,9 +102,9 @@ var Q = require('q');
 
 function containsObject(obj, list) {
     var i;
-    console.log(list.lenght);
+    
     for (i = 0; i < list.length; i++) {
-       console.log(list[i].filter +" tst "+ obj.filter);
+       
         if (list[i].filter === obj.filter) {
             return true;
         }
@@ -194,23 +194,22 @@ app.get('/refreshData', function(req, res){
   			data = JSON.parse(data);
   			data = data.retorno.notasfiscais;
   			data.forEach(function (item) {
-	  			pedidos.findAndModify({
-	  				numeroPedidoLoja: item.notafiscal.numeroPedidoLoja
-	  			},null
-	  			,{$setOnInsert:item.notafiscal}		
-	  			, {
-	  				new: true,
-	  				upsert: true
-	  			})
-	  				obj = {filter : item.notafiscal.situacao}; 
-	  				
-	  				if(!containsObject(obj, filts)){
-	  					filts.push(obj);
-	  				}
-	  				 				
-  					
+	  			item.notafiscal.status = "Nao Enviado";	
+		  			pedidos.findAndModify({
+		  				numeroPedidoLoja: item.notafiscal.numeroPedidoLoja
+		  			},null
+		  			,{$setOnInsert:item.notafiscal}		
+		  			, {
+		  				new: true,
+		  				upsert: true
+		  			})
+		  				obj = {filter : item.notafiscal.situacao}; 
+		  				
+		  				if(!containsObject(obj, filts)){
+		  					filts.push(obj);
+		  				}					
   			})
-  			console.log(filts);
+  			
   			res.json(filts);
   		})
 		})
@@ -218,9 +217,26 @@ app.get('/refreshData', function(req, res){
   	  		console.log("Got error: " + e.message);
 		});
 });
+app.get('/searchData',function (req, res){
+	var ind = req.query.index;
+	console.log(ind);
+	var pedidos = db.collection('pedidos');
+	if(ind){
+		var regexp = new RegExp('^' + ind);
+
+		pedidos.find({numeroPedidoLoja : regexp})
+		.then(function (data){
+		
+			data.sort(function(obj1, obj2) {					
+				return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
+			});
+			res.json(data);
+		})
+	}
+})
+
 
 app.post('/sendData', function(req, res){
-
 	var data = req.body;
 		data.forEach(function (item){
 			var dados='';
@@ -236,6 +252,7 @@ app.post('/sendData', function(req, res){
 
     			response.on('end', function(){
     				delete item.Selected;
+    				item.status = "Enviado";
 						updateItem(item);
     			});
     			
@@ -251,39 +268,43 @@ app.post('/sendData', function(req, res){
 	res.json(data);
 })
 
-app.get('/getData', function(req, res){
-
-	var pedidos = db.collection('pedidos');
-	pedidos.find()
-	.then(function (data){
-		res.json(data);	
-	})
-	
-})
-
 app.post('/getFilterData',function (req,res){
 		var pedidos = db.collection('pedidos');
 		var filt = req.body.filter;
-		if(filt==="Todos"){
-		pedidos.find()
-			.then(function (data){
-				data.sort(function(obj1, obj2) {
-					
-					return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
-				});
-				res.json(data);	
-			})
+		
+		switch(filt) {
+	    case "Todos":
+	        pedidos.find()
+					.then(function (data){
+						data.sort(function(obj1, obj2) {
+						
+							return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
+						});
+						res.json(data);	
+					})
+	        break;
+	    case "Nao Enviado":
+	   	case "Enviado":
+        pedidos.find({status : filt})
+					.then(function (data){
+						data.sort(function(obj1, obj2) {
+						
+							return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
+						});
+						res.json(data);
+					})        
+	        break;
+	    default:
+	    		pedidos.find({situacao : filt})
+					.then(function (data){
+						data.sort(function(obj1, obj2) {
+						
+							return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
+						});
+						res.json(data);
+					})
 		}
-		else{
-			pedidos.find({situacao : filt})
-			.then(function (data){
-				data.sort(function(obj1, obj2) {
-					
-					return obj2.numeroPedidoLoja - obj1.numeroPedidoLoja;
-				});
-				res.json(data);
-			})
-		}
+
 });
 
 app.post('/auth', passport.authenticate('local'));
