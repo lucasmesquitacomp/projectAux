@@ -19,7 +19,7 @@ var Q = require('q');
 		var methodOverride = require('method-override');
 		var session = require('express-session');
 	//Auth connection
-	mongoose.connect('localhost','pedidos');
+	mongoose.connect('localhost','systemEnvios');
 	var dbm = mongoose.connection;
 	dbm.on('error', console.error.bind(console, 'connection error:'));
 	dbm.once('open', function callback(){
